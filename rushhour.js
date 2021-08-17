@@ -1,5 +1,5 @@
 var H = 8;
-var W = 8;
+var W = 9;
 var Wcolor = '#C8C2BD';
 var Bcolor = 'rgb(9,17,26)';
 var Cur = 0;
@@ -30,9 +30,13 @@ function tableClick(e){
 document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e){
     switch(e.keyCode){
+        case 65:
         case 37: move(0); break;
+        case 87:
         case 38: move(1); break;
+        case 68:
         case 39: move(2); break;
+        case 83:
         case 40: move(3); break;
         case 32: init(); break;
     }
@@ -41,14 +45,14 @@ function keyDownEventHandler(e){
 //initializing functions
 function initMap(){
   map = [
-      [-1, -1, -1, -1, -1, -1, -1, -1],
-      [-1,  4,  5,  5,  6,  6,  6, -1],
-      [-1,  4,  0,  7,  7,  8,  0, -1],
-      [-1,  1,  1,  3,  0,  8,  0,  0],
-      [-1,  2,  2,  3,  9,  9, 10, -1],
-      [-1,  0, 11, 11, 13,  0, 10, -1],
-      [-1, 12, 12, 12, 13,  0, 10, -1],
-      [-1, -1, -1, -1, -1, -1, -1, -1]
+      [-1, -1, -1, -1, -1, -1, -1, -1, 0],
+      [-1,  4,  5,  5,  6,  6,  6, -1, 0],
+      [-1,  4,  0,  7,  7,  8,  0, -1, 0],
+      [-1,  1,  1,  3,  0,  8,  0,  0, 0],
+      [-1,  2,  2,  3,  9,  9, 10, -1, 0],
+      [-1,  0, 11, 11, 13,  0, 10, -1, 0],
+      [-1, 12, 12, 12, 13,  0, 10, -1, 0],
+      [-1, -1, -1, -1, -1, -1, -1, -1, 0]
   ];
   shape = [
       [0, 0, 0, 0],
@@ -97,7 +101,6 @@ function setColor(){
 }
 function init(){
   initMap();
-  drawmap();
   setColor();
   Cur = 0;
 }
@@ -137,9 +140,18 @@ function move(dir){
           }
         }
     }
+    if(map[3][7] === 1){
+      solved();
+    }
 }
 
 
+//solve / pause
+function solved(){
+
+}
+
 
 //main
+drawmap();
 init();
