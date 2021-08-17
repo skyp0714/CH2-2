@@ -1,0 +1,11 @@
+body{
+    background-color: rgb(9,17,26);
+}
+td{
+    width: 50px;
+    height: 50px;
+}
+#gameField{
+    margin-left: 20px;
+    margin-top: 20px;
+}
