@@ -2,10 +2,12 @@ var H = 8;
 var W = 9;
 var Wcolor = '#C8C2BD';
 var Bcolor = 'rgb(9,17,26)';
-var Cur = -1;
+var Cur = 0;
 var Shake = 0;
 var mLeft = -215;
 var mTop = -200;
+var shTreshold = 7;
+var shInt;
 var color = [
     Bcolor,
     '#FF0000',
@@ -29,7 +31,10 @@ function tableClick(e){
     if(e.target.cellIndex){
     Cur = map[e.target.closest('tr').rowIndex][e.target.cellIndex];
     }else if(e.target.id === 'section' || e.target.id === 'guide' ){
+      // deactivate
       Cur = 0;
+      // activate
+      // Cur = -1;
     }
 
 }
@@ -86,7 +91,7 @@ function initMap(){
       [6, 1, 0, 3],
       [5, 4, 1, 2]
   ];
-  Cur = -1;
+  Cur = 0;
 }
 function initShake(){
   Shake = 0;
@@ -122,7 +127,7 @@ function setColor(){
 function init(){
   initMap();
   setColor();
-  Cur = -1;
+  Cur = 0;
   Shake = 0;
 }
 
@@ -161,13 +166,14 @@ function move(dir){
         }
       }
     }
-  }else if(!Cur){
+  }else if(Cur < 0){
     Shake++;
+    if(Shake) clearTimeout(shInt);
     mLeft += 10 * dy[dir];
     mTop += 10 * dx[dir];
     document.getElementById('gameTable').style.marginLeft = String(mLeft) + 'px';
     document.getElementById('gameTable').style.marginTop = String(mTop) + 'px';
-    ShInt = setTimeout(initShake,1000);
+    shInt = setTimeout(initShake,1000);
   }
 
   if(map[3][8] === 1) solve();
@@ -178,7 +184,6 @@ function move(dir){
 // solve(hidden) / pause
 var mInt;
 var skmInt;
-var shTreshold = 10;
 function solve(){
   clearInterval(mInt);
   document.getElementById('gameTable').style.display = 'none';
@@ -214,7 +219,7 @@ function showHidden(){
   mInt = setInterval(move, 100, 2);
 }
 function solve2(){
-  Cur = -1;
+  Cur = 0;
   Shake = 0;
   document.getElementById('gameTable').style.marginLeft = '-215px';
   document.getElementById('gameTable').style.marginTop = '-200px';
