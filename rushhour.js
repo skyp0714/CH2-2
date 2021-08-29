@@ -4,7 +4,6 @@ var Wcolor = '#C8C2BD';
 var Bcolor = 'rgb(9,17,26)';
 var Cur = -1;
 var Shake = 0;
-var ShInt;
 var mLeft = -215;
 var mTop = -200;
 var color = [
@@ -138,52 +137,87 @@ function SetChange(x, y, cidx){
     map[x][y] = cidx;
 }
 function move(dir){
-    if(Cur > 0){
-      var curShape = shape[Cur];
-      if(Cur && curShape[2] === (dir % 2)){
+  if(Cur > 0){
+    var curShape = shape[Cur];
+    if(Cur && curShape[2] === (dir % 2)){
 
-        var fx = curShape[0];
-        var fy = curShape[1];
-        var rx = curShape[0]+ sx[curShape[2]] * (curShape[3]-1);
-        var ry = curShape[1]+ sy[curShape[2]] * (curShape[3]-1);
-          if(dir < 2){
-            if(map[fx+dx[dir]][fy+dy[dir]] === 0){
-              SetChange(fx+dx[dir], fy+dy[dir], Cur);
-              SetChange(rx, ry, 0);
-              shape[Cur][0] += dx[dir];
-              shape[Cur][1] += dy[dir];
-            }
-          }else{
-            if(map[rx+dx[dir]][ry+dy[dir]] === 0){
-              SetChange(rx+dx[dir], ry+dy[dir], Cur);
-              SetChange(fx, fy, 0);
-              shape[Cur][0] += dx[dir];
-              shape[Cur][1] += dy[dir];
-            }
-          }
+      var fx = curShape[0];
+      var fy = curShape[1];
+      var rx = curShape[0]+ sx[curShape[2]] * (curShape[3]-1);
+      var ry = curShape[1]+ sy[curShape[2]] * (curShape[3]-1);
+      if(dir < 2){
+        if(map[fx+dx[dir]][fy+dy[dir]] === 0){
+          SetChange(fx+dx[dir], fy+dy[dir], Cur);
+          SetChange(rx, ry, 0);
+          shape[Cur][0] += dx[dir];
+          shape[Cur][1] += dy[dir];
+        }
+      }else{
+        if(map[rx+dx[dir]][ry+dy[dir]] === 0){
+          SetChange(rx+dx[dir], ry+dy[dir], Cur);
+          SetChange(fx, fy, 0);
+          shape[Cur][0] += dx[dir];
+          shape[Cur][1] += dy[dir];
+        }
       }
+    }
   }else if(!Cur){
     Shake++;
-    if(Shake) clearInterval(ShInt);
     mLeft += 10 * dy[dir];
     mTop += 10 * dx[dir];
     document.getElementById('gameTable').style.marginLeft = String(mLeft) + 'px';
     document.getElementById('gameTable').style.marginTop = String(mTop) + 'px';
-    ShInt = setInterval(initShake,1000);
+    ShInt = setTimeout(initShake,1000);
   }
 
-  if(map[3][8] === 1 || Shake > 10){
-    solve();
-  }
+  if(map[3][8] === 1) solve();
+  if(Shake > 5) solve2();
 }
 
 
 //solve / pause
+var mInt;
+var skmInt;
 function solve(){
+  clearInterval(mInt);
   document.getElementById('gameTable').style.display = 'none';
   document.getElementById('guide').style.display = 'none';
   document.getElementById('pause').style.display = 'none';
   document.getElementById('solve').style.display = 'block';
+}
+
+function shakeMap(){
+  if(document.getElementById('gameTable').style.marginLeft === '-230px'){
+    document.getElementById('gameTable').style.marginLeft = '-200px';
+  }else{
+    document.getElementById('gameTable').style.marginLeft = '-230px';
+  }
+}
+function showHidden(){
+  clearInterval(skmInt);
+  for(var i=0;i<H;i++){
+      for(var j=0; j<W; j++){
+
+          if(map[i][j] === -1){
+              gebi(i,j).style.background = Wcolor;
+          }else if(map[i][j] === 1){
+              gebi(i,j).style.background = color[map[i][j]];
+          }else{
+              gebi(i,j).style.background = Bcolor;
+              map[i][j] = 0;
+          }
+      }
+  }
+  Cur = 1;
+  mInt = setInterval(move, 100, 2);
+}
+function solve2(){
+  Cur = -1;
+  Shake = 0;
+  document.getElementById('gameTable').style.marginLeft = '-215px';
+  document.getElementById('gameTable').style.marginTop = '-200px';
+  skmInt = setInterval(shakeMap, 70);
+  setTimeout(showHidden,2000);
 }
 
 function pause(){
