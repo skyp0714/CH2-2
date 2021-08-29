@@ -159,6 +159,7 @@ function move(dir){
 function solve(){
   document.getElementById('gameTable').style.display = 'none';
   document.getElementById('guide').style.display = 'none';
+  document.getElementById('pause').style.display = 'none';
   document.getElementById('solve').style.display = 'block';
 }
 
