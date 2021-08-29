@@ -171,13 +171,14 @@ function move(dir){
   }
 
   if(map[3][8] === 1) solve();
-  if(Shake > 5) solve2();
+  if(Shake > shTreshold) solve2();
 }
 
 
-//solve / pause
+// solve(hidden) / pause
 var mInt;
 var skmInt;
+var shTreshold = 10;
 function solve(){
   clearInterval(mInt);
   document.getElementById('gameTable').style.display = 'none';
