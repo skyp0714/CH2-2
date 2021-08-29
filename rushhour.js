@@ -30,15 +30,24 @@ function tableClick(e){
 document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e){
     switch(e.keyCode){
+        // Left, A
         case 65:
         case 37: move(0); break;
+        // Top, W
         case 87:
         case 38: move(1); break;
+        // Right, D
         case 68:
         case 39: move(2); break;
+        // Down, S
         case 83:
         case 40: move(3); break;
+        // Spacebar
         case 32: init(); break;
+        // Esc
+        case 27: pause(); break;
+        //solve test backspace
+        case 8: solve(); break;
     }
 }
 
@@ -80,7 +89,8 @@ function drawmap(){
           fieldTag += "<td id=\""+String(j)+" "+String(i)+"\"></td>";
       fieldTag += "</tr>";
   }
-  document.write(fieldTag);
+
+  document.getElementById('section').innerHTML += fieldTag;
 }
 function gebi(x, y){
   var ret = document.getElementById(String(y)+" "+String(x));
@@ -117,7 +127,6 @@ function SetChange(x, y, cidx){
 }
 function move(dir){
     var curShape = shape[Cur];
-    var Ccolor = color[Cur];
     if(Cur && curShape[2] === (dir % 2)){
 
       var fx = curShape[0];
@@ -140,17 +149,30 @@ function move(dir){
           }
         }
     }
-    if(map[3][7] === 1){
-      solved();
+    if(map[3][8] === 1){
+      solve();
     }
 }
 
 
 //solve / pause
-function solved(){
-
+function solve(){
+  document.getElementById('gameTable').style.display = 'none';
+  document.getElementById('guide').style.display = 'none';
+  document.getElementById('solve').style.display = 'block';
 }
 
+function pause(){
+    if(document.getElementById('pause').style.display === 'none'){
+      document.getElementById('gameTable').style.display = 'none';
+      document.getElementById('guide').style.display = 'none';
+      document.getElementById('pause').style.display = 'block';
+    }else{
+      document.getElementById('gameTable').style.display = 'block';
+      document.getElementById('guide').style.display = 'block';
+      document.getElementById('pause').style.display = 'none';
+    }
+}
 
 //main
 drawmap();
