@@ -163,7 +163,8 @@ function solve(){
 }
 
 function pause(){
-    if(document.getElementById('pause').style.display === 'none'){
+    if(document.getElementById('solve').style.display === 'block'){  
+    }else if(document.getElementById('pause').style.display === 'none'){
       document.getElementById('gameTable').style.display = 'none';
       document.getElementById('guide').style.display = 'none';
       document.getElementById('pause').style.display = 'block';
