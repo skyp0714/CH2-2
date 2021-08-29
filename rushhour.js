@@ -187,10 +187,11 @@ function solve(){
 }
 
 function shakeMap(){
-  if(document.getElementById('gameTable').style.marginLeft === '-230px'){
-    document.getElementById('gameTable').style.marginLeft = '-200px';
+  var gameTable = document.getElementById('gameTable');
+  if(gameTable.style.marginLeft === '-230px'){
+    gameTable.style.marginLeft = '-200px';
   }else{
-    document.getElementById('gameTable').style.marginLeft = '-230px';
+    gameTable.style.marginLeft = '-230px';
   }
 }
 function showHidden(){
