@@ -2,8 +2,11 @@ var H = 8;
 var W = 9;
 var Wcolor = '#C8C2BD';
 var Bcolor = 'rgb(9,17,26)';
-var Cur = 0;
-
+var Cur = -1;
+var Shake = 0;
+var ShInt;
+var mLeft = -215;
+var mTop = -200;
 var color = [
     Bcolor,
     '#FF0000',
@@ -24,7 +27,12 @@ var color = [
 //handle key input
 document.onclick = tableClick;
 function tableClick(e){
+    if(e.target.cellIndex){
     Cur = map[e.target.closest('tr').rowIndex][e.target.cellIndex];
+    }else if(e.target.id === 'section' || e.target.id === 'guide' ){
+      Cur = 0;
+    }
+
 }
 
 document.onkeydown = keyDownEventHandler;
@@ -47,7 +55,7 @@ function keyDownEventHandler(e){
         // Esc
         case 27: pause(); break;
         //solve test backspace
-        case 8: solve(); break;
+        //case 8: solve(); break;
     }
 }
 
@@ -79,7 +87,10 @@ function initMap(){
       [6, 1, 0, 3],
       [5, 4, 1, 2]
   ];
-  Cur = 0;
+  Cur = -1;
+}
+function initShake(){
+  Shake = 0;
 }
 function drawmap(){
   var fieldTag = "<table id=\"gameTable\" border=0>";
@@ -112,7 +123,8 @@ function setColor(){
 function init(){
   initMap();
   setColor();
-  Cur = 0;
+  Cur = -1;
+  Shake = 0;
 }
 
 //manipulation
@@ -126,32 +138,43 @@ function SetChange(x, y, cidx){
     map[x][y] = cidx;
 }
 function move(dir){
-    var curShape = shape[Cur];
-    if(Cur && curShape[2] === (dir % 2)){
+    if(Cur > 0){
+      var curShape = shape[Cur];
+      if(Cur && curShape[2] === (dir % 2)){
 
-      var fx = curShape[0];
-      var fy = curShape[1];
-      var rx = curShape[0]+ sx[curShape[2]] * (curShape[3]-1);
-      var ry = curShape[1]+ sy[curShape[2]] * (curShape[3]-1);
-        if(dir < 2){
-          if(map[fx+dx[dir]][fy+dy[dir]] === 0){
-            SetChange(fx+dx[dir], fy+dy[dir], Cur);
-            SetChange(rx, ry, 0);
-            shape[Cur][0] += dx[dir];
-            shape[Cur][1] += dy[dir];
+        var fx = curShape[0];
+        var fy = curShape[1];
+        var rx = curShape[0]+ sx[curShape[2]] * (curShape[3]-1);
+        var ry = curShape[1]+ sy[curShape[2]] * (curShape[3]-1);
+          if(dir < 2){
+            if(map[fx+dx[dir]][fy+dy[dir]] === 0){
+              SetChange(fx+dx[dir], fy+dy[dir], Cur);
+              SetChange(rx, ry, 0);
+              shape[Cur][0] += dx[dir];
+              shape[Cur][1] += dy[dir];
+            }
+          }else{
+            if(map[rx+dx[dir]][ry+dy[dir]] === 0){
+              SetChange(rx+dx[dir], ry+dy[dir], Cur);
+              SetChange(fx, fy, 0);
+              shape[Cur][0] += dx[dir];
+              shape[Cur][1] += dy[dir];
+            }
           }
-        }else{
-          if(map[rx+dx[dir]][ry+dy[dir]] === 0){
-            SetChange(rx+dx[dir], ry+dy[dir], Cur);
-            SetChange(fx, fy, 0);
-            shape[Cur][0] += dx[dir];
-            shape[Cur][1] += dy[dir];
-          }
-        }
-    }
-    if(map[3][8] === 1){
-      solve();
-    }
+      }
+  }else if(!Cur){
+    Shake++;
+    if(Shake) clearInterval(ShInt);
+    mLeft += 10 * dy[dir];
+    mTop += 10 * dx[dir];
+    document.getElementById('gameTable').style.marginLeft = String(mLeft) + 'px';
+    document.getElementById('gameTable').style.marginTop = String(mTop) + 'px';
+    ShInt = setInterval(initShake,1000);
+  }
+
+  if(map[3][8] === 1 || Shake > 10){
+    solve();
+  }
 }
 
 
@@ -164,7 +187,7 @@ function solve(){
 }
 
 function pause(){
-    if(document.getElementById('solve').style.display === 'block'){  
+    if(document.getElementById('solve').style.display === 'block'){
     }else if(document.getElementById('pause').style.display === 'none'){
       document.getElementById('gameTable').style.display = 'none';
       document.getElementById('guide').style.display = 'none';
